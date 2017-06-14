@@ -256,6 +256,10 @@
     [self.drawView clearDrawing];
 }
 
+- (void)clearLastPath {
+    [self.drawView clearLastPath];
+}
+
 - (void)clearText
 {
     self.textString = @"";

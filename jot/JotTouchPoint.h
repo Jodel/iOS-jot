@@ -39,6 +39,8 @@
  */
 @property (nonatomic, assign) CGFloat strokeWidth;
 
+@property (nonatomic) NSUUID* uniqueStrokeId;
+
 /**
  *  Returns an instance of JotTouchPoint with the given CGPoint
  *

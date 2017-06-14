@@ -50,6 +50,8 @@
  */
 - (void)clearDrawing;
 
+- (void)clearLastPath;
+
 /**
  *  Tells the JotDrawView to handle a touchesBegan event.
  *

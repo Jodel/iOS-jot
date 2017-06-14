@@ -170,6 +170,8 @@ typedef NS_ENUM(NSUInteger, JotViewState){
  */
 - (void)clearDrawing;
 
+- (void)clearLastPath;
+
 /**
  *  Clears only the text, leaving the drawing alone.
  */
