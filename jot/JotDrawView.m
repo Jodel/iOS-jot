@@ -27,6 +27,7 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
 @property (nonatomic, assign) CGFloat lastVelocity;
 @property (nonatomic, assign) CGFloat lastWidth;
 @property (nonatomic, assign) CGFloat initialVelocity;
+@property (nonatomic) NSTimer *drawAllTimer;
 
 @property (nonatomic) NSUUID *currentStrokeId;
 
@@ -95,20 +96,13 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     
     [self.pathsArray removeObjectsInArray:toRemove];
         
-    [self drawBitmapAll];
+    [self scheduleRedrawingBitmap];
     
     self.bezierPath = nil;
     self.pointsCounter = 0;
     [self.pointsArray removeAllObjects];
     self.lastVelocity = self.initialVelocity;
     self.lastWidth = self.strokeWidth;
-    
-    [UIView transitionWithView:self duration:0.2f
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{
-                        [self setNeedsDisplay];
-                    }
-                    completion:nil];
 }
 
 #pragma mark - Properties
@@ -213,6 +207,14 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     self.cachedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     [self setNeedsDisplay];
+}
+
+- (void)scheduleRedrawingBitmap {
+    if (self.drawAllTimer.valid) {
+        return;
+    }
+    
+    self.drawAllTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(drawBitmapAll) userInfo:nil repeats:NO];
 }
 
 - (void)drawBitmapAll
