@@ -305,4 +305,8 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     }
 }
 
+- (BOOL)hasDrawing {
+    return self.pathsArray.count > 0;
+}
+
 @end

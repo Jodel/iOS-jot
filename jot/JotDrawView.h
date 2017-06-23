@@ -107,4 +107,6 @@
  */
 - (UIImage *)renderDrawingWithSize:(CGSize)size;
 
+- (BOOL)hasDrawing;
+
 @end

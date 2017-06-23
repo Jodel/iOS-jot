@@ -356,6 +356,10 @@
     }
 }
 
+- (BOOL)hasDrawing {
+    return [self.drawView hasDrawing];
+}
+
 #pragma mark - UIGestureRecognizer Delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer

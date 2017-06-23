@@ -217,6 +217,8 @@ typedef NS_ENUM(NSUInteger, JotViewState){
  */
 - (UIImage *)renderImageWithScale:(CGFloat)scale onColor:(UIColor *)color;
 
+- (BOOL)hasDrawing;
+
 @end
 
 @protocol JotViewControllerDelegate <NSObject>
