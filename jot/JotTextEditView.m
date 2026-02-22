@@ -7,8 +7,6 @@
 //
 
 #import "JotTextEditView.h"
-#import <Masonry/Masonry.h>
-
 @interface JotTextEditView () <UITextViewDelegate>
 
 @property (nonatomic, strong) UITextView *textView;
@@ -16,6 +14,11 @@
 @property (nonatomic, strong) CAGradientLayer *gradientMask;
 @property (nonatomic, strong) CAGradientLayer *topGradient;
 @property (nonatomic, strong) CAGradientLayer *bottomGradient;
+@property (nonatomic, strong) NSLayoutConstraint *textContainerBottomConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *textViewTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *textViewBottomConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *textViewLeadingConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *textViewTrailingConstraint;
 
 @end
 
@@ -34,12 +37,16 @@
         
         _textContainer = [UIView new];
         self.textContainer.layer.masksToBounds = YES;
+        self.textContainer.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:self.textContainer];
-        [self.textContainer mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.left.and.right.equalTo(self);
-            make.bottom.equalTo(self).offset(0.f);
-        }];
-        
+        _textContainerBottomConstraint = [self.textContainer.bottomAnchor constraintEqualToAnchor:self.bottomAnchor];
+        [NSLayoutConstraint activateConstraints:@[
+            [self.textContainer.topAnchor constraintEqualToAnchor:self.topAnchor],
+            [self.textContainer.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
+            [self.textContainer.trailingAnchor constraintEqualToAnchor:self.trailingAnchor],
+            _textContainerBottomConstraint
+        ]];
+
         _textView = [UITextView new];
         self.textView.backgroundColor = [UIColor clearColor];
         self.textView.text = self.textString;
@@ -47,10 +54,18 @@
         self.textView.returnKeyType = UIReturnKeyDone;
         self.textView.clipsToBounds = NO;
         self.textView.delegate = self;
+        self.textView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.textContainer addSubview:self.textView];
-        [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.textContainer).insets(_textEditingInsets);
-        }];
+        _textViewTopConstraint = [self.textView.topAnchor constraintEqualToAnchor:self.textContainer.topAnchor constant:_textEditingInsets.top];
+        _textViewBottomConstraint = [self.textContainer.bottomAnchor constraintEqualToAnchor:self.textView.bottomAnchor constant:_textEditingInsets.bottom];
+        _textViewLeadingConstraint = [self.textView.leadingAnchor constraintEqualToAnchor:self.textContainer.leadingAnchor constant:_textEditingInsets.left];
+        _textViewTrailingConstraint = [self.textContainer.trailingAnchor constraintEqualToAnchor:self.textView.trailingAnchor constant:_textEditingInsets.right];
+        [NSLayoutConstraint activateConstraints:@[
+            _textViewTopConstraint,
+            _textViewBottomConstraint,
+            _textViewLeadingConstraint,
+            _textViewTrailingConstraint
+        ]];
         
         self.textContainer.hidden = YES;
         self.userInteractionEnabled = NO;
@@ -65,9 +80,7 @@
                                                           CGRect keyboardRectEnd = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
                                                           NSTimeInterval duration = [note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
                                                           
-                                                          [self.textContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-                                                              make.bottom.equalTo(self).offset(-CGRectGetHeight(keyboardRectEnd));
-                                                          }];
+                                                          self.textContainerBottomConstraint.constant = -CGRectGetHeight(keyboardRectEnd);
                                                           
                                                           [UIView animateWithDuration:duration
                                                                                 delay:0.f
@@ -102,9 +115,10 @@
 {
     if (!UIEdgeInsetsEqualToEdgeInsets(_textEditingInsets, textEditingInsets)) {
         _textEditingInsets = textEditingInsets;
-        [self.textView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.textContainer).insets(textEditingInsets);
-        }];
+        self.textViewTopConstraint.constant = textEditingInsets.top;
+        self.textViewBottomConstraint.constant = textEditingInsets.bottom;
+        self.textViewLeadingConstraint.constant = textEditingInsets.left;
+        self.textViewTrailingConstraint.constant = textEditingInsets.right;
         [self.textView layoutIfNeeded];
         [self.textView setContentOffset:CGPointZero animated:NO];
     }

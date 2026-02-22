@@ -10,7 +10,6 @@
 #import "JotDrawView.h"
 #import "JotTextView.h"
 #import "JotTextEditView.h"
-#import <Masonry/Masonry.h>
 #import "UIImage+Jot.h"
 #import "JotDrawingContainer.h"
 
@@ -85,24 +84,40 @@
     self.drawingContainer.clipsToBounds = YES;
     
     [self.view addSubview:self.drawingContainer];
-    [self.drawingContainer mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
-    
+    self.drawingContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.drawingContainer.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.drawingContainer.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+        [self.drawingContainer.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.drawingContainer.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor]
+    ]];
+
     [self.drawingContainer addSubview:self.drawView];
-    [self.drawView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.drawingContainer);
-    }];
-    
+    self.drawView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.drawView.topAnchor constraintEqualToAnchor:self.drawingContainer.topAnchor],
+        [self.drawView.bottomAnchor constraintEqualToAnchor:self.drawingContainer.bottomAnchor],
+        [self.drawView.leadingAnchor constraintEqualToAnchor:self.drawingContainer.leadingAnchor],
+        [self.drawView.trailingAnchor constraintEqualToAnchor:self.drawingContainer.trailingAnchor]
+    ]];
+
     [self.drawingContainer addSubview:self.textView];
-    [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.drawingContainer);
-    }];
-    
+    self.textView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.textView.topAnchor constraintEqualToAnchor:self.drawingContainer.topAnchor],
+        [self.textView.bottomAnchor constraintEqualToAnchor:self.drawingContainer.bottomAnchor],
+        [self.textView.leadingAnchor constraintEqualToAnchor:self.drawingContainer.leadingAnchor],
+        [self.textView.trailingAnchor constraintEqualToAnchor:self.drawingContainer.trailingAnchor]
+    ]];
+
     [self.view addSubview:self.textEditView];
-    [self.textEditView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
+    self.textEditView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.textEditView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.textEditView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+        [self.textEditView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.textEditView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor]
+    ]];
     
     [self.drawingContainer addGestureRecognizer:self.tapRecognizer];
     [self.drawingContainer addGestureRecognizer:self.panRecognizer];
