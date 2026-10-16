@@ -221,8 +221,15 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
 {
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
     
-    for (JotTouchBezier *path in self.pathsArray) {
-        [path jotDrawBezier];
+    for (id path in self.pathsArray) {
+        if ([path isKindOfClass:[JotTouchBezier class]]) {
+            [path jotDrawBezier];
+        } else if ([path isKindOfClass:[JotTouchPoint class]]) {
+            JotTouchPoint *touchPoint = path;
+            [touchPoint.strokeColor setFill];
+            [JotTouchBezier jotDrawBezierPoint:[touchPoint CGPointValue]
+                                     withWidth:touchPoint.strokeWidth];
+        }
     }
     
     self.cachedImage = UIGraphicsGetImageFromCurrentImageContext();
